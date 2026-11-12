@@ -1,0 +1,28 @@
+{
+  "name": "lumen-render",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Randare video pe server pentru Lumen Studio (Remotion + GitHub Actions)",
+  "scripts": {
+    "render": "tsx scripts/render.ts",
+    "render:demo": "tsx scripts/demo.ts",
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.539",
+    "@remotion/cli": "4.0.539",
+    "@remotion/renderer": "4.0.539",
+    "@supabase/supabase-js": "2.118.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.539"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.0",
+    "@types/react": "19.2.0",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2"
+  }
+}
