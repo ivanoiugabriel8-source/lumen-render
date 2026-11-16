@@ -107,3 +107,32 @@ export const FRAME_SIZE: Record<Format, { width: number; height: number }> = {
 
 export const MUSIC_FADE_IN_S = 1;
 export const MUSIC_FADE_OUT_S = 1.5;
+
+/**
+ * Face conținutul unei scene sigur de afișat: modelul AI poate întoarce uneori liste sau obiecte
+ * în loc de text (de exemplu {title, verify, content}), iar un obiect pus direct ca text ar bloca randarea.
+ * Câmpurile interne (verify, verified, id) nu se afișează niciodată.
+ */
+const HIDDEN_KEYS = new Set(["verify", "verified", "id"]);
+export const asText = (v: unknown): string => {
+  if (typeof v === "string") return v;
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
+  if (Array.isArray(v)) return v.map(asText).filter(Boolean).join(" ");
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    if ("title" in o && "content" in o) return [asText(o["title"]), asText(o["content"])].filter(Boolean).join(": ");
+    return Object.entries(o).filter(([k]) => !HIDDEN_KEYS.has(k)).map(([, x]) => asText(x)).filter(Boolean).join(" ");
+  }
+  return "";
+};
+
+const LIST_KEYS = new Set(["items", "options"]);
+export function normalizeContent(raw: unknown): Record<string, any> {
+  const out: Record<string, any> = {};
+  for (const [key, value] of Object.entries((raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>)) {
+    if (LIST_KEYS.has(key)) {
+      out[key] = (Array.isArray(value) ? value : typeof value === "string" ? value.split("\n") : []).map(asText).filter(Boolean);
+    } else out[key] = asText(value);
+  }
+  return out;
+}

@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import {
   chunkSubtitles,
+  normalizeContent,
   resolveColors,
   resolveFonts,
   type Format,
@@ -35,7 +36,7 @@ export const SceneView: React.FC<Props> = ({ scene, format, colors, fonts, subti
   const v = format === "9:16";
   const c = resolveColors(colors);
   const f = resolveFonts(fonts);
-  const k: any = scene.content ?? {};
+  const k: any = normalizeContent(scene.content);
   const template = scene.template;
 
   const sec = frame / fps;
